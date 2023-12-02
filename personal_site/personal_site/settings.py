@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-1fw^yj0aiz8h#5fvh!r2dj=y-lwjn+g03^q_ujjq!4nfyh#iie
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://maddy-codes.github.io/","http://127.0.0.1:8000/"]
 
 
 # Application definition
