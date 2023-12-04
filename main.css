@@ -1,0 +1,38 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+.nav-links{
+    color: aquamarine;
+    display: inline;
+    padding: 2em;
+    text-align: right;
+}
+
+.nav-link-container{
+    display: inline;
+    background-color: rgb(255, 196, 196);
+    text-align: end;
+}
+
+.nav-bar{
+    background-color: aqua;
+    text-align: end;
+    overflow: hidden;
+    padding: 2em;
+    display: inline;
+    text-justify: auto;
+    text-align: justify;
+}
+
+.nav-name{
+    display: inline;
+    text-decoration: none;
+    color: black;
+    background-color:beige;
+    padding: 2em;   
+}
+.header{
+    display: block;
+    width: 100%;
+}
