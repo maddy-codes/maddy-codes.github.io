@@ -322,7 +322,7 @@
             font-size: 1rem;
             outline: none;
             width: 100%;
-            caret-color: var(--green);
+            caret-color: transparent;
             text-transform: lowercase;
         }
 
@@ -666,6 +666,7 @@
                     }
 
                     if (currentScreen === 'boot') {
+                        SoundManager.play('boot');
                         handleScreenChange('menu');
                         return;
                     }
@@ -756,15 +757,15 @@
                             </p>
                             <p style={{ marginBottom: '1rem', color: GREEN }}>
                                 <span style={{ opacity: 0.7 }}>/ PORTFOLIO:</span><br />
-                                &nbsp;&nbsp;<a href="https://maddy-codes.github.io" target="_blank">maddy-codes.github.io</a>
+                                &nbsp;&nbsp;<a href="https://maddy-codes.github.io" target="_blank" rel="noopener noreferrer">maddy-codes.github.io</a>
                             </p>
                             <p style={{ marginBottom: '1rem', color: GREEN }}>
                                 <span style={{ opacity: 0.7 }}>/ LINKEDIN:</span><br />
-                                &nbsp;&nbsp;<a href="https://linkedin.com/in/jaz-arora" target="_blank">linkedin.com/in/jatin-arora</a>
+                                &nbsp;&nbsp;<a href="https://linkedin.com/in/jaz-arora" target="_blank" rel="noopener noreferrer">linkedin.com/in/jatin-arora</a>
                             </p>
                             <p style={{ marginBottom: '1rem', color: GREEN }}>
                                 <span style={{ opacity: 0.7 }}>/ GITHUB:</span><br />
-                                &nbsp;&nbsp;<a href="https://github.com/maddy-codes" target="_blank">github.com/maddy-codes</a>
+                                &nbsp;&nbsp;<a href="https://github.com/maddy-codes" target="_blank" rel="noopener noreferrer">github.com/maddy-codes</a>
                             </p>
                         </div>
                     </div>
