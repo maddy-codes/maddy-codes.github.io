@@ -460,15 +460,9 @@
                 { id: 'download_cv', label: '7. Download CV' },
             ];
 
-            // Helper to trigger download
+            // Helper to open resume in new tab
             const triggerDownload = () => {
-                const link = document.createElement('a');
-                link.href = '#'; // Replace with actual CV URL
-                link.download = 'Jatin_Arora_CV.pdf';
-                document.body.appendChild(link);
-                // Simulate download for demo
-                alert("Initiating download: Jatin_Arora_CV.pdf");
-                document.body.removeChild(link);
+                window.open('Resume.pdf', '_blank');
             };
 
             const handleScreenChange = (screenId) => {
