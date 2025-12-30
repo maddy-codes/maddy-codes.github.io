@@ -5,6 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jatin Arora - Portfolio</title>
+    <link rel="icon" type="image/svg+xml" id="favicon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000000'/%3E%3Crect x='5' y='2' width='6' height='12' rx='1' fill='%234ade80'/%3E%3C/svg%3E">
+    <script>
+        // Blinking favicon effect
+        (function () {
+            const favicon1 = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000000'/%3E%3Crect x='5' y='2' width='6' height='12' rx='1' fill='%234ade80'/%3E%3C/svg%3E";
+            const favicon2 = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000000'/%3E%3C/svg%3E";
+            let isVisible = true;
+
+            setInterval(() => {
+                const link = document.getElementById('favicon');
+                if (link) {
+                    link.href = isVisible ? favicon2 : favicon1;
+                    isVisible = !isVisible;
+                }
+            }, 800);
+        })();
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
