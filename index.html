@@ -462,6 +462,7 @@
             const [isTransitioning, setIsTransitioning] = useState(false);
             const [isPoweredOff, setIsPoweredOff] = useState(false);
 
+            const [currentJoke, setCurrentJoke] = useState(null);
             const [soundEnabled, setSoundEnabled] = useState(() => {
                 const saved = localStorage.getItem('crt_sound');
                 const isEnabled = saved === 'true';
@@ -482,6 +483,21 @@
             const scrollRef = useRef(null);
 
             const GREEN = '#4ade80';
+
+            const jokes = [
+                { setup: "Why do programmers prefer dark mode?", punchline: "Because light attracts bugs." },
+                { setup: "Why did the developer go broke?", punchline: "Because he used up all his cache." },
+                { setup: "How many programmers does it take to change a light bulb?", punchline: "None. It's a hardware problem." },
+                { setup: "Why do Java developers wear glasses?", punchline: "Because they don't C#." },
+                { setup: "What's a programmer's favorite hangout place?", punchline: "Foo Bar." },
+                { setup: "Why did the programmer quit his job?", punchline: "Because he didn't get arrays." },
+                { setup: "What do you call 8 hobbits?", punchline: "A hobbyte." },
+                { setup: "Why do programmers always mix up Halloween and Christmas?", punchline: "Because Oct 31 == Dec 25." },
+                { setup: "What's the object-oriented way to become wealthy?", punchline: "Inheritance." },
+                { setup: "Why did the data scientist get arrested?", punchline: "For plotting against the government." },
+                { setup: "What do you call a programmer from Finland?", punchline: "Nerdic." },
+                { setup: "Why don't backticks ever get lonely?", punchline: "They're always in template literals." }
+            ];
 
             const bootSequence = [
                 'SYSTEM BOOT SEQUENCE INITIATED...',
@@ -508,10 +524,17 @@
                 { id: 'achievements', label: '5. Achievements' },
                 { id: 'contact', label: '6. Contact' },
                 { id: 'download_cv', label: '7. Download CV' },
+                { id: 'joke', label: '8. Random Joke' },
             ];
 
             const triggerDownload = () => {
                 window.open('Resume.pdf', '_blank');
+            };
+
+            const generateJoke = () => {
+                const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+                setCurrentJoke(randomJoke);
+                return randomJoke;
             };
 
             const handleScreenChange = (screenId) => {
@@ -520,6 +543,9 @@
                 if (screenId === 'download_cv') {
                     triggerDownload();
                     return;
+                }
+                if (screenId === 'joke') {
+                    generateJoke();
                 }
                 if (scrollRef.current) {
                     scrollPositions.current[currentScreen] = scrollRef.current.scrollTop;
@@ -544,10 +570,10 @@
 
                     switch (cmd) {
                         case 'help':
-                            ['ls', 'cat [file]', 'open [page]', 'download cv', 'clear', 'exit'].forEach(c => newHistory.push('  ' + c));
+                            ['ls', 'cat [file]', 'open [page]', 'download cv', 'joke', 'clear', 'exit'].forEach(c => newHistory.push('  ' + c));
                             break;
                         case 'ls':
-                            ['about.txt', 'experience.log', 'education.edu', 'skills.sys', 'achievements.txt', 'contact.dat', 'cv.pdf'].forEach(f => newHistory.push(f));
+                            ['about.txt', 'experience.log', 'education.edu', 'skills.sys', 'achievements.txt', 'contact.dat', 'cv.pdf', 'joke.exe'].forEach(f => newHistory.push(f));
                             break;
                         case 'clear':
                             setTerminalHistory([]);
@@ -558,10 +584,17 @@
                             setInputMode('gui');
                             setTerminalInput('');
                             return;
-                        case 'download cv':
                         case 'cv':
+                        case 'download cv':
                             newHistory.push('Downloading Jatin_Arora_CV.pdf...');
                             triggerDownload();
+                            break;
+                        case 'joke':
+                            const joke = generateJoke();
+                            newHistory.push('');
+                            newHistory.push(joke.setup);
+                            newHistory.push(joke.punchline);
+                            newHistory.push('');
                             break;
                         case 'about': handleScreenChange('about'); setInputMode('gui'); break;
                         case 'exp':
@@ -703,7 +736,7 @@
                             SoundManager.play('key');
                         } else if (e.key === 'Enter') {
                             handleScreenChange(menuItems[selectedItem].id);
-                        } else if (e.key >= '1' && e.key <= '7') {
+                        } else if (e.key >= '1' && e.key <= '8') {
                             handleScreenChange(menuItems[parseInt(e.key) - 1].id);
                         }
                     }
@@ -768,6 +801,32 @@
                                 &nbsp;&nbsp;<a href="https://github.com/maddy-codes" target="_blank" rel="noopener noreferrer">github.com/maddy-codes</a>
                             </p>
                         </div>
+                    </div>
+                </div>
+            );
+
+            const renderJoke = () => (
+                <div>
+                    <pre style={{ marginBottom: '1rem', color: GREEN, fontWeight: 'bold' }}>{`> JOKE_GENERATOR.EXE`}</pre>
+                    <div>
+                        <p style={{ fontWeight: 'bold', marginBottom: '1.5rem', color: GREEN }}>► RANDOM PROGRAMMING JOKE</p>
+                        {currentJoke ? (
+                            <div style={{ marginLeft: '1rem' }}>
+                                <p style={{ marginBottom: '1.5rem', color: GREEN, fontSize: '1.05em' }}>
+                                    {currentJoke.setup}
+                                </p>
+                                <p style={{ marginBottom: '2rem', color: GREEN, fontWeight: 'bold', fontSize: '1.05em' }}>
+                                    {currentJoke.punchline}
+                                </p>
+                                <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px dashed rgba(74, 222, 128, 0.3)' }}>
+                                    <p style={{ color: GREEN, opacity: 0.7 }}>
+                                        ~ Press 8 or type 'joke' in terminal for another one ~
+                                    </p>
+                                </div>
+                            </div>
+                        ) : (
+                            <p style={{ marginLeft: '1rem', color: GREEN }}>Loading joke...</p>
+                        )}
                     </div>
                 </div>
             );
@@ -1015,6 +1074,7 @@
                     case 'skills': return renderSkills();
                     case 'achievements': return renderAchievements();
                     case 'contact': return renderContact();
+                    case 'joke': return renderJoke();
                     default: return renderMenu();
                 }
             };
