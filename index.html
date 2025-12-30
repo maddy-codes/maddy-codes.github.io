@@ -16,75 +16,221 @@
         }
 
         body {
-            background-color: #1a1a1a;
+            background-color: #121212;
             font-family: 'Courier New', monospace;
             overflow: hidden;
             height: 100vh;
             width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        @keyframes flicker {
+        .monitor-case {
+            width: min(92vw, 1100px);
+            aspect-ratio: 4/3;
+            max-height: 95vh;
+            background-color: #000;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 20px solid #2a2a2a;
+            border-radius: 20px;
+            box-shadow:
+                0 0 0 4px #1a1a1a,
+                inset 0 0 60px rgba(0, 0, 0, 0.8),
+                0 20px 50px rgba(0, 0, 0, 0.5);
+        }
 
-            0%,
-            100% {
+        /* 3. Visual Grit - Voltage Instability */
+        @keyframes flicker {
+            0% {
                 opacity: 1;
             }
 
-            50% {
-                opacity: 0.95;
+            5% {
+                opacity: 0.98;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Subtle text twitch to simulate beam wobble */
+        @keyframes text-twitch {
+            0% {
+                transform: translateX(0);
+            }
+
+            98% {
+                transform: translateX(0);
+            }
+
+            99% {
+                transform: translateX(-0.5px);
+            }
+
+            100% {
+                transform: translateX(0);
             }
         }
 
         .crt-screen {
-            animation: flicker 0.15s infinite;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0a0a0a;
+            overflow: hidden;
+            animation: flicker 0.6s infinite;
+            will-change: opacity;
         }
 
-        .crt-screen::before {
-            content: "";
+        .crt-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
+            background:
+                radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.4) 100%),
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 100%, 100% 3px;
             pointer-events: none;
-            z-index: 10;
+            z-index: 50;
+            border-radius: 4px;
         }
 
-        .crt-screen::after {
+        .crt-overlay::after {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(18, 16, 16, 0.1);
-            opacity: 0;
+            inset: 0;
+            background-image: repeating-radial-gradient(circle at 50% 50%,
+                    rgba(255, 255, 255, 0.02),
+                    rgba(255, 255, 255, 0.02) 1px,
+                    transparent 1px,
+                    transparent 2px);
+            background-size: 4px 4px;
+            opacity: 0.15;
             pointer-events: none;
-            animation: flicker 0.15s infinite;
-            z-index: 10;
         }
 
-        ::selection {
-            background-color: #4ade80;
-            color: #000;
+        .content-wrapper {
+            flex: 1;
+            width: 100%;
+            overflow-y: auto;
+            position: relative;
+            z-index: 20;
+            scroll-behavior: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #4ade80 #0a0a0a;
+        }
+
+        .content-container {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 2rem 2rem 2rem;
+            animation: text-twitch 4s infinite;
+            /* Applied grit */
+        }
+
+        .content-container.center-aligned {
+            justify-content: center;
+            align-items: center;
+            padding-top: 0;
+        }
+
+        .content-container.top-aligned {
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .content-inner {
+            width: 100%;
+            max-width: 850px;
+            line-height: 1.8;
+        }
+
+        .status-bar {
+            height: 40px;
+            border-top: 2px solid rgba(74, 222, 128, 0.3);
+            background-color: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            color: #4ade80;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            z-index: 60;
+            font-weight: bold;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 4px rgba(74, 222, 128, 0.4);
+        }
+
+        strong {
+            font-weight: 700;
+            text-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
+        }
+
+        a {
+            color: #4ade80;
+            text-decoration: underline;
+            transition: color 0.2s;
+            cursor: pointer;
+            user-select: text;
+        }
+
+        a:hover {
+            color: #86efac;
+            text-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+            border-left: 1px solid #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border: 1px solid #4ade80;
+            box-shadow: inset 0 0 4px #4ade80;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4ade80;
         }
 
         .scanline {
             position: absolute;
             width: 100%;
-            height: 100px;
-            background: linear-gradient(to bottom, transparent 0%, rgba(74, 222, 128, 0.1) 50%, transparent 100%);
-            animation: scan 8s linear infinite;
+            height: 50px;
+            background: linear-gradient(to bottom, transparent 0%, rgba(74, 222, 128, 0.05) 50%, transparent 100%);
+            animation: scan 10s linear infinite;
             pointer-events: none;
-            z-index: 5;
+            z-index: 40;
         }
 
         @keyframes scan {
             0% {
-                top: -100px;
+                top: -50px;
             }
 
             100% {
@@ -94,22 +240,26 @@
 
         .menu-item {
             cursor: pointer;
-            padding: 0.25rem 1rem;
-            margin: 0.5rem 0;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem 0;
             color: #4ade80;
+            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
         }
 
         .menu-item:hover {
-            background-color: #4ade80;
-            color: #000;
+            background-color: rgba(74, 222, 128, 0.1);
+            padding-left: 1.5rem;
         }
 
-        .selected {
+        .menu-item.selected {
             background-color: #4ade80;
             color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
         }
 
-        @keyframes pulse {
+        @keyframes blink {
 
             0%,
             100% {
@@ -117,30 +267,79 @@
             }
 
             50% {
-                opacity: 0.5;
+                opacity: 0;
             }
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
+        .cursor-block {
+            display: inline-block;
+            width: 10px;
+            height: 1em;
+            background-color: #4ade80;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 8px;
         }
 
-        ::-webkit-scrollbar-track {
-            background: #000;
+        .screen-fade {
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #4ade80;
-            border-radius: 4px;
+        .screen-fade.hidden {
+            opacity: 0;
+            transform: translateY(5px);
         }
 
-        a {
+        .system-off {
+            opacity: 0;
+            transition: opacity 2s ease-out;
+        }
+
+        /* Terminal Input Styles */
+        .terminal-input {
+            background: transparent;
+            border: none;
             color: #4ade80;
-            text-decoration: underline;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            outline: none;
+            width: 100%;
+            caret-color: #4ade80;
         }
 
-        a:hover {
-            color: #22c55e;
+        @media (max-width: 768px) {
+            .monitor-case {
+                width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                border: none;
+                border-radius: 0;
+                aspect-ratio: auto;
+            }
+
+            .content-wrapper {
+                padding: 0;
+            }
+
+            .content-container {
+                padding: 1rem;
+            }
+
+            .scanline,
+            .crt-overlay::after {
+                display: none;
+            }
+
+            .crt-overlay {
+                background: none;
+            }
+
+            .status-bar {
+                padding: 0 1rem;
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
@@ -149,15 +348,91 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef, useLayoutEffect } = React;
+
+        /* --- 1. Audio System (Web Audio API) --- */
+        const SoundManager = {
+            ctx: null,
+            enabled: false,
+            init: function () {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            toggle: function () {
+                this.enabled = !this.enabled;
+                if (this.enabled) this.init();
+                return this.enabled;
+            },
+            play: function (type) {
+                if (!this.enabled || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                const now = this.ctx.currentTime;
+
+                if (type === 'boot') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(110, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    osc.start(now);
+                    osc.stop(now + 0.5);
+                } else if (type === 'key') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(800, now); // Click
+                    gain.gain.setValueAtTime(0.02, now); // Very quiet
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+                    osc.start(now);
+                    osc.stop(now + 0.03);
+                } else if (type === 'enter') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                }
+            }
+        };
 
         const CRTPortfolio = () => {
             const [currentScreen, setCurrentScreen] = useState('boot');
             const [bootText, setBootText] = useState('');
+            const [shutdownText, setShutdownText] = useState('');
             const [selectedItem, setSelectedItem] = useState(0);
+            const [isTransitioning, setIsTransitioning] = useState(false);
+            const [isPoweredOff, setIsPoweredOff] = useState(false);
+            const [soundEnabled, setSoundEnabled] = useState(false);
+
+            // Terminal State
+            const [inputMode, setInputMode] = useState('gui'); // 'gui' or 'terminal'
+            const [terminalHistory, setTerminalHistory] = useState([
+                'JATIN ARORA PORTFOLIO OS v1.0',
+                'Type "help" for available commands.',
+                ''
+            ]);
+            const [terminalInput, setTerminalInput] = useState('');
+            const terminalEndRef = useRef(null);
+
+            const scrollPositions = useRef({});
+            const scrollRef = useRef(null);
 
             const GREEN = '#4ade80';
 
+            // Constants
             const bootSequence = [
                 'SYSTEM BOOT SEQUENCE INITIATED...',
                 'Loading BIOS v2.4.1',
@@ -173,6 +448,8 @@
                 'Press any key to continue...'
             ];
 
+            const shutdownSequence = ['Initiating shutdown sequence...', 'Saving state...', 'Flushing buffers...', 'System halted.'];
+
             const menuItems = [
                 { id: 'about', label: '1. About Me' },
                 { id: 'experience', label: '2. Experience' },
@@ -180,55 +457,242 @@
                 { id: 'skills', label: '4. Technical Skills' },
                 { id: 'achievements', label: '5. Achievements' },
                 { id: 'contact', label: '6. Contact' },
+                { id: 'download_cv', label: '7. Download CV' },
             ];
 
+            // Helper to trigger download
+            const triggerDownload = () => {
+                const link = document.createElement('a');
+                link.href = '#'; // Replace with actual CV URL
+                link.download = 'Jatin_Arora_CV.pdf';
+                document.body.appendChild(link);
+                // Simulate download for demo
+                alert("Initiating download: Jatin_Arora_CV.pdf");
+                document.body.removeChild(link);
+            };
+
+            const handleScreenChange = (screenId) => {
+                if (currentScreen === screenId) return;
+
+                SoundManager.play('enter');
+
+                if (screenId === 'download_cv') {
+                    triggerDownload();
+                    return;
+                }
+
+                if (scrollRef.current) {
+                    scrollPositions.current[currentScreen] = scrollRef.current.scrollTop;
+                }
+
+                setIsTransitioning(true);
+                setTimeout(() => {
+                    setCurrentScreen(screenId);
+                    setIsTransitioning(false);
+                }, 200);
+            };
+
+            // Toggle Sound
+            const toggleSound = () => {
+                const newState = SoundManager.toggle();
+                setSoundEnabled(newState);
+            };
+
+            // Terminal Logic
+            const handleTerminalCommand = (e) => {
+                if (e.key === 'Enter') {
+                    SoundManager.play('enter');
+                    const cmd = terminalInput.trim().toLowerCase();
+                    const newHistory = [...terminalHistory, `visitor@portfolio:~$ ${terminalInput}`];
+
+                    switch (cmd) {
+                        case 'help':
+                            newHistory.push('Available commands:');
+                            newHistory.push('  ls            - List files');
+                            newHistory.push('  cat [file]    - Read file content');
+                            newHistory.push('  open [page]   - Open GUI page (about, exp, skills...)');
+                            newHistory.push('  download cv   - Download Resume');
+                            newHistory.push('  clear         - Clear terminal');
+                            newHistory.push('  exit          - Return to GUI');
+                            break;
+                        case 'ls':
+                            newHistory.push('about.txt');
+                            newHistory.push('experience.log');
+                            newHistory.push('education.edu');
+                            newHistory.push('skills.sys');
+                            newHistory.push('achievements.txt');
+                            newHistory.push('contact.dat');
+                            newHistory.push('cv.pdf');
+                            break;
+                        case 'clear':
+                            setTerminalHistory([]);
+                            setTerminalInput('');
+                            return;
+                        case 'exit':
+                            setInputMode('gui');
+                            setTerminalInput('');
+                            return;
+                        case 'download cv':
+                            newHistory.push('Downloading Jatin_Arora_CV.pdf...');
+                            triggerDownload();
+                            break;
+                        default:
+                            if (cmd.startsWith('cat ')) {
+                                const file = cmd.split(' ')[1];
+                                const mapping = {
+                                    'about.txt': 'about',
+                                    'experience.log': 'experience',
+                                    'education.edu': 'education',
+                                    'skills.sys': 'skills',
+                                    'achievements.txt': 'achievements',
+                                    'contact.dat': 'contact'
+                                };
+                                if (mapping[file]) {
+                                    // Switch to GUI to show rich content (simplification)
+                                    newHistory.push(`Opening ${file} in viewer...`);
+                                    setTimeout(() => {
+                                        setInputMode('gui');
+                                        handleScreenChange(mapping[file]);
+                                    }, 500);
+                                } else {
+                                    newHistory.push(`Error: File '${file}' not found.`);
+                                    SoundManager.play('error');
+                                }
+                            } else if (cmd.startsWith('open ')) {
+                                const page = cmd.split(' ')[1];
+                                const pages = ['about', 'experience', 'education', 'skills', 'achievements', 'contact'];
+                                if (pages.includes(page)) {
+                                    setInputMode('gui');
+                                    handleScreenChange(page);
+                                } else {
+                                    newHistory.push(`Error: Page '${page}' not found.`);
+                                    SoundManager.play('error');
+                                }
+                            } else if (cmd === '') {
+                                // do nothing
+                            } else {
+                                newHistory.push(`Command not found: ${cmd}`);
+                                SoundManager.play('error');
+                            }
+                    }
+
+                    setTerminalHistory(newHistory);
+                    setTerminalInput('');
+                } else {
+                    SoundManager.play('key');
+                }
+            };
+
+            // Scroll Restore
+            useEffect(() => {
+                if (!isTransitioning && scrollRef.current && inputMode === 'gui') {
+                    scrollRef.current.scrollTop = scrollPositions.current[currentScreen] || 0;
+                }
+            }, [currentScreen, isTransitioning, inputMode]);
+
+            // Terminal Auto-scroll
+            useEffect(() => {
+                if (inputMode === 'terminal' && terminalEndRef.current) {
+                    terminalEndRef.current.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, [terminalHistory, inputMode]);
+
+            // Boot Timer
             useEffect(() => {
                 if (currentScreen === 'boot') {
+                    SoundManager.play('boot');
                     let index = 0;
                     const interval = setInterval(() => {
                         if (index < bootSequence.length) {
                             setBootText(prev => prev + bootSequence[index] + '\n');
                             index++;
+                            SoundManager.play('key');
                         } else {
                             clearInterval(interval);
                         }
-                    }, 150);
+                    }, 140);
                     return () => clearInterval(interval);
                 }
             }, [currentScreen]);
 
+            // Shutdown Timer
+            useEffect(() => {
+                if (currentScreen === 'shutdown') {
+                    let index = 0;
+                    const interval = setInterval(() => {
+                        if (index < shutdownSequence.length) {
+                            setShutdownText(prev => prev + shutdownSequence[index] + '\n');
+                            index++;
+                        } else {
+                            clearInterval(interval);
+                            setTimeout(() => setIsPoweredOff(true), 1000);
+                        }
+                    }, 800);
+                    return () => clearInterval(interval);
+                }
+            }, [currentScreen]);
+
+            // Global Key Handler
             useEffect(() => {
                 const handleKeyPress = (e) => {
-                    if (currentScreen === 'boot' && bootText.includes('Press any key')) {
-                        setCurrentScreen('menu');
+                    if (isPoweredOff) return;
+
+                    // If in terminal mode, only listen for Escape to exit
+                    if (inputMode === 'terminal') {
+                        if (e.key === 'Escape') setInputMode('gui');
                         return;
                     }
 
-                    if (currentScreen !== 'menu' && e.key === 'Escape') {
-                        setCurrentScreen('menu');
+                    if (currentScreen === 'boot' && bootText.includes('Press any key')) {
+                        handleScreenChange('menu');
+                        return;
+                    }
+
+                    if (currentScreen === 'menu' && (e.key === 'q' || e.key === 'Q')) {
+                        handleScreenChange('shutdown');
+                        return;
+                    }
+
+                    if (e.key === 's' || e.key === 'S') {
+                        toggleSound();
+                        return;
+                    }
+
+                    if (e.key === 't' || e.key === 'T') {
+                        if (currentScreen !== 'boot' && currentScreen !== 'shutdown') {
+                            setInputMode('terminal');
+                            SoundManager.play('enter');
+                        }
+                        return;
+                    }
+
+                    if (currentScreen !== 'menu' && currentScreen !== 'shutdown' && e.key === 'Escape') {
+                        handleScreenChange('menu');
                         return;
                     }
 
                     if (currentScreen === 'menu') {
                         if (e.key === 'ArrowDown') {
                             setSelectedItem((prev) => (prev + 1) % menuItems.length);
+                            SoundManager.play('key');
                         } else if (e.key === 'ArrowUp') {
                             setSelectedItem((prev) => (prev - 1 + menuItems.length) % menuItems.length);
+                            SoundManager.play('key');
                         } else if (e.key === 'Enter') {
-                            setCurrentScreen(menuItems[selectedItem].id);
-                        } else if (e.key >= '1' && e.key <= '6') {
-                            setCurrentScreen(menuItems[parseInt(e.key) - 1].id);
+                            handleScreenChange(menuItems[selectedItem].id);
+                        } else if (e.key >= '1' && e.key <= '7') {
+                            handleScreenChange(menuItems[parseInt(e.key) - 1].id);
                         }
                     }
                 };
 
                 window.addEventListener('keydown', handleKeyPress);
                 return () => window.removeEventListener('keydown', handleKeyPress);
-            }, [currentScreen, selectedItem, bootText]);
+            }, [currentScreen, selectedItem, bootText, isPoweredOff, inputMode]);
 
             const renderMenu = () => (
                 <div style={{ marginTop: '1rem' }}>
-                    <pre style={{ marginBottom: '1.5rem', color: GREEN, whiteSpace: 'pre-wrap' }}>
+                    <pre style={{ marginBottom: '1.5rem', color: GREEN, whiteSpace: 'pre-wrap', fontWeight: 'bold' }} className="glow-text">
                         {`╔════════════════════════════════════════╗
 ║        MAIN MENU - SELECT OPTION       ║
 ╚════════════════════════════════════════╝`}
@@ -237,23 +701,26 @@
                         {menuItems.map((item, index) => (
                             <div
                                 key={item.id}
-                                onClick={() => setCurrentScreen(item.id)}
+                                onClick={() => {
+                                    setSelectedItem(index);
+                                    handleScreenChange(item.id);
+                                }}
                                 className={`menu-item ${selectedItem === index ? 'selected' : ''}`}
                             >
-                                {selectedItem === index ? '►' : ' '} {item.label}
+                                <span style={{ marginRight: '10px' }}>{selectedItem === index ? '►' : ' '}</span>
+                                {item.label}
+                                {selectedItem === index && <span className="cursor-block"></span>}
                             </div>
                         ))}
-                    </div>
-                    <div style={{ marginTop: '1.5rem', opacity: 0.7, fontSize: '0.875rem', color: GREEN }}>
-                        <p>Use arrow keys or click to select • Press Enter or number key to open</p>
                     </div>
                 </div>
             );
 
+            /* --- CONTENT COMPONENTS (Keeping text exactly as requested) --- */
             const renderAbout = () => (
                 <div>
-                    <pre style={{ marginBottom: '1rem', color: GREEN }}>{`> ABOUT_ME.TXT`}</pre>
-                    <p style={{ lineHeight: '1.8', color: GREEN }}>
+                    <pre style={{ marginBottom: '1rem', color: GREEN, fontWeight: 'bold' }}>{`> ABOUT_ME.TXT`}</pre>
+                    <p style={{ color: GREEN }}>
                         ~ An enthusiastic and hardworking professional with strong leadership skills<br />
                         ~ Currently pursuing final year B.Sc. AI and Data Science<br />
                         ~ Location: Northampton, United Kingdom<br />
@@ -265,21 +732,17 @@
                         / Focused on building scalable, event-driven data systems that drive real<br />
                         / business efficiency.
                     </p>
-                    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(74, 222, 128, 0.3)', opacity: 0.7, fontSize: '0.875rem', color: GREEN }}>
-                        Press ESC to return to menu
-                    </div>
                 </div>
             );
 
             const renderExperience = () => (
                 <div>
-                    <pre style={{ marginBottom: '1rem', color: GREEN }}>{`> WORK_EXPERIENCE.LOG`}</pre>
+                    <pre style={{ marginBottom: '1rem', color: GREEN, fontWeight: 'bold' }}>{`> WORK_EXPERIENCE.LOG`}</pre>
 
-                    <div style={{ marginBottom: '1rem' }}>
-                        <p style={{ fontWeight: 'bold', color: GREEN }}>► DATA ENGINEER</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Phipps Henson McAllister, Northampton</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Sep 2025 - Present</p>
-                        <p style={{ marginTop: '0.5rem', marginLeft: '1rem', color: GREEN }}>
+                    <div style={{ marginBottom: '2rem' }}>
+                        <p style={{ fontWeight: 'bold', color: GREEN, fontSize: '1.1em' }}>► DATA ENGINEER</p>
+                        <p style={{ opacity: 0.8, color: GREEN, marginBottom: '0.5rem' }}>~ Phipps Henson McAllister, Northampton | Sep 2025 - Present</p>
+                        <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Lead end-to-end migration of financial data from legacy IRIS to Karbon<br />
                             / Architect robust data integration pipelines with Xero, GoCardless<br />
                             / Develop AI-powered system for automated financial review<br />
@@ -288,11 +751,10 @@
                         </p>
                     </div>
 
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem', marginBottom: '1rem' }}>
-                        <p style={{ fontWeight: 'bold', color: GREEN }}>► AI & DATA SCIENCE PLACEMENT</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ AstraZeneca, Cambridge</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Sep 2024 - Aug 2025</p>
-                        <p style={{ marginTop: '0.5rem', marginLeft: '1rem', color: GREEN }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
+                        <p style={{ fontWeight: 'bold', color: GREEN, fontSize: '1.1em' }}>► AI & DATA SCIENCE PLACEMENT</p>
+                        <p style={{ opacity: 0.8, color: GREEN, marginBottom: '0.5rem' }}>~ AstraZeneca, Cambridge | Sep 2024 - Aug 2025</p>
+                        <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Automated manual data processes across 7 departments in LCS division<br />
                             / Developed solutions using Python, R, and Microsoft Power Platform<br />
                             / Engineered AI prediction model for clinical trial shipping quantities<br />
@@ -300,11 +762,10 @@
                         </p>
                     </div>
 
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem', marginBottom: '1rem' }}>
-                        <p style={{ fontWeight: 'bold', color: GREEN }}>► DATA ENGINEER</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Phipps Henson McAllister, Northampton</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Dec 2023 - Aug 2024</p>
-                        <p style={{ marginTop: '0.5rem', marginLeft: '1rem', color: GREEN }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
+                        <p style={{ fontWeight: 'bold', color: GREEN, fontSize: '1.1em' }}>► DATA ENGINEER</p>
+                        <p style={{ opacity: 0.8, color: GREEN, marginBottom: '0.5rem' }}>~ Phipps Henson McAllister, Northampton | Dec 2023 - Aug 2024</p>
+                        <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Engineered ETL pipelines integrating accounting software to Azure SQL<br />
                             / Utilized Power Platform and Azure Logic Apps for automation<br />
                             / Automated data extraction and visualization on SharePoint dashboards<br />
@@ -312,55 +773,45 @@
                         </p>
                     </div>
 
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem', marginBottom: '1rem' }}>
-                        <p style={{ fontWeight: 'bold', color: GREEN }}>► AI ENGINEER</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Mavis Technologies, Northampton</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Dec 2023 - Feb 2024</p>
-                        <p style={{ marginTop: '0.5rem', marginLeft: '1rem', color: GREEN }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
+                        <p style={{ fontWeight: 'bold', color: GREEN, fontSize: '1.1em' }}>► AI ENGINEER</p>
+                        <p style={{ opacity: 0.8, color: GREEN, marginBottom: '0.5rem' }}>~ Mavis Technologies, Northampton | Dec 2023 - Feb 2024</p>
+                        <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Developed MVP for AI-powered smart glasses application<br />
                             / Managed complete ML lifecycle: model selection to deployment<br />
                             / Optimized model for resource-constrained microcontrollers
                         </p>
                     </div>
 
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem' }}>
-                        <p style={{ fontWeight: 'bold', color: GREEN }}>► RESEARCH ASSISTANT</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ University of Northampton</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Apr 2023 - Oct 2024</p>
-                        <p style={{ marginTop: '0.5rem', marginLeft: '1rem', color: GREEN }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1.5rem' }}>
+                        <p style={{ fontWeight: 'bold', color: GREEN, fontSize: '1.1em' }}>► RESEARCH ASSISTANT</p>
+                        <p style={{ opacity: 0.8, color: GREEN, marginBottom: '0.5rem' }}>~ University of Northampton | Apr 2023 - Oct 2024</p>
+                        <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Co-developed NLP-powered chatbot for mental health support<br />
                             / Analyzed order fulfillment process for GXO logistics<br />
                             / Identified bottlenecks and proposed data-driven improvements
                         </p>
-                    </div>
-
-                    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(74, 222, 128, 0.3)', opacity: 0.7, fontSize: '0.875rem', color: GREEN }}>
-                        Press ESC to return to menu
                     </div>
                 </div>
             );
 
             const renderEducation = () => (
                 <div>
-                    <pre style={{ marginBottom: '1rem', color: GREEN }}>{`> EDUCATION.EDU`}</pre>
-
-                    <div style={{ marginBottom: '1rem' }}>
-                        <p style={{ fontWeight: 'bold', color: GREEN }}>► B.SC. (HONS) ARTIFICIAL INTELLIGENCE AND DATA SCIENCE</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ University of Northampton</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Sep 2022 - Jul 2026 (Expected)</p>
-                        <p style={{ marginTop: '0.5rem', marginLeft: '1rem', color: GREEN }}>
+                    <pre style={{ marginBottom: '1rem', color: GREEN, fontWeight: 'bold' }}>{`> EDUCATION.EDU`}</pre>
+                    <div style={{ marginBottom: '2rem' }}>
+                        <p style={{ fontWeight: 'bold', color: GREEN, fontSize: '1.1em' }}>► B.SC. (HONS) ARTIFICIAL INTELLIGENCE AND DATA SCIENCE</p>
+                        <p style={{ opacity: 0.8, color: GREEN, marginBottom: '0.5rem' }}>~ University of Northampton | Sep 2022 - Jul 2026 (Expected)</p>
+                        <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Year 1 Grades: All A+ and A- (6 modules)<br />
                             / Year 2 Grades: All A+ and A- (6 modules)<br />
                             / Key modules: Cloud Computing, Big Data, Relational Databases,<br />
                             &nbsp;&nbsp;Data Structures & Algorithms, Introduction to AI
                         </p>
                     </div>
-
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem', marginBottom: '1rem' }}>
-                        <p style={{ fontWeight: 'bold', color: GREEN }}>► AMS DATA ANALYST BOOTCAMP</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Open Classrooms, United Kingdom</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Jan 2023 - Mar 2023</p>
-                        <p style={{ marginTop: '0.5rem', marginLeft: '1rem', color: GREEN }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
+                        <p style={{ fontWeight: 'bold', color: GREEN, fontSize: '1.1em' }}>► AMS DATA ANALYST BOOTCAMP</p>
+                        <p style={{ opacity: 0.8, color: GREEN, marginBottom: '0.5rem' }}>~ Open Classrooms, United Kingdom | Jan 2023 - Mar 2023</p>
+                        <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Funded by UK Department for Education<br />
                             / Project-based approach covering:<br />
                             &nbsp;&nbsp;• Data Analysis using Excel<br />
@@ -369,28 +820,21 @@
                             &nbsp;&nbsp;• Database querying with SQL
                         </p>
                     </div>
-
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem' }}>
-                        <p style={{ fontWeight: 'bold', color: GREEN }}>► HIGH SCHOOL DIPLOMA</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Carmel Convent School, India</p>
-                        <p style={{ opacity: 0.7, color: GREEN }}>~ Mar 2020 - Apr 2021</p>
-                        <p style={{ marginTop: '0.5rem', marginLeft: '1rem', color: GREEN }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1.5rem' }}>
+                        <p style={{ fontWeight: 'bold', color: GREEN, fontSize: '1.1em' }}>► HIGH SCHOOL DIPLOMA</p>
+                        <p style={{ opacity: 0.8, color: GREEN, marginBottom: '0.5rem' }}>~ Carmel Convent School, India | Mar 2020 - Apr 2021</p>
+                        <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Non-Medical Sciences: Mathematics, Physics, Chemistry, English<br />
                             / Final Score: 93.5%
                         </p>
-                    </div>
-
-                    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(74, 222, 128, 0.3)', opacity: 0.7, fontSize: '0.875rem', color: GREEN }}>
-                        Press ESC to return to menu
                     </div>
                 </div>
             );
 
             const renderSkills = () => (
                 <div>
-                    <pre style={{ marginBottom: '1rem', color: GREEN }}>{`> TECHNICAL_SKILLS.SYS`}</pre>
-
-                    <div style={{ marginBottom: '1rem' }}>
+                    <pre style={{ marginBottom: '1rem', color: GREEN, fontWeight: 'bold' }}>{`> TECHNICAL_SKILLS.SYS`}</pre>
+                    <div style={{ marginBottom: '1.5rem' }}>
                         <p style={{ fontWeight: 'bold', color: GREEN }}>► DATA ENGINEERING ARCHITECTURE</p>
                         <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Medallion Architecture (Bronze/Silver/Gold)<br />
@@ -399,8 +843,7 @@
                             / Hybrid Batch/Streaming Pipelines
                         </p>
                     </div>
-
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem', marginBottom: '1rem' }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1rem', marginBottom: '1.5rem' }}>
                         <p style={{ fontWeight: 'bold', color: GREEN }}>► ETL & ORCHESTRATION</p>
                         <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Azure Data Factory (ADF), Apache Airflow<br />
@@ -408,8 +851,7 @@
                             / Incremental Loading (Upserts/Idempotency)
                         </p>
                     </div>
-
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem', marginBottom: '1rem' }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1rem', marginBottom: '1.5rem' }}>
                         <p style={{ fontWeight: 'bold', color: GREEN }}>► CLOUD & STORAGE</p>
                         <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Azure SQL Data Warehouse (Synapse)<br />
@@ -417,8 +859,7 @@
                             / Docker, Azure Container Registry
                         </p>
                     </div>
-
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem', marginBottom: '1rem' }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1rem', marginBottom: '1.5rem' }}>
                         <p style={{ fontWeight: 'bold', color: GREEN }}>► AI & LLM ENGINEERING</p>
                         <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / RAG (Retrieval Augmented Generation)<br />
@@ -427,8 +868,7 @@
                             / Machine Learning: Scikit-Learn, Keras, TensorFlow
                         </p>
                     </div>
-
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem', marginBottom: '1rem' }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1rem', marginBottom: '1.5rem' }}>
                         <p style={{ fontWeight: 'bold', color: GREEN }}>► PROGRAMMING & PLATFORMS</p>
                         <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Python [Advanced]: Pandas, NumPy, Matplotlib, Seaborn<br />
@@ -438,8 +878,7 @@
                             / RESTful APIs, Postman, Auth0
                         </p>
                     </div>
-
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem' }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1rem' }}>
                         <p style={{ fontWeight: 'bold', color: GREEN }}>► SOFT SKILLS</p>
                         <p style={{ marginLeft: '1rem', color: GREEN }}>
                             / Leadership & Teamwork<br />
@@ -448,18 +887,13 @@
                             / Agile Management, Resilient & Confident
                         </p>
                     </div>
-
-                    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(74, 222, 128, 0.3)', opacity: 0.7, fontSize: '0.875rem', color: GREEN }}>
-                        Press ESC to return to menu
-                    </div>
                 </div>
             );
 
             const renderAchievements = () => (
                 <div>
-                    <pre style={{ marginBottom: '1rem', color: GREEN }}>{`> ACHIEVEMENTS.TXT`}</pre>
-
-                    <div style={{ marginBottom: '1rem' }}>
+                    <pre style={{ marginBottom: '1rem', color: GREEN, fontWeight: 'bold' }}>{`> ACHIEVEMENTS.TXT`}</pre>
+                    <div style={{ marginBottom: '2rem' }}>
                         <p style={{ fontWeight: 'bold', color: GREEN }}>► LEADERSHIP & COMMUNITY</p>
                         <p style={{ marginLeft: '1rem', marginTop: '0.5rem', color: GREEN }}>
                             / Co-founded AI Student Society at University of Northampton<br />
@@ -468,8 +902,7 @@
                             / Student Representative for ALT East England AI debate
                         </p>
                     </div>
-
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem', marginBottom: '1rem' }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
                         <p style={{ fontWeight: 'bold', color: GREEN }}>► CERTIFICATIONS</p>
                         <p style={{ marginLeft: '1rem', marginTop: '0.5rem', color: GREEN }}>
                             / Azure AI Engineer Associate Professional Certification<br />
@@ -481,8 +914,7 @@
                             / Tableau Certification
                         </p>
                     </div>
-
-                    <div style={{ borderTop: '1px solid rgba(74, 222, 128, 0.3)', paddingTop: '1rem' }}>
+                    <div style={{ borderTop: '1px dashed rgba(74, 222, 128, 0.2)', paddingTop: '1.5rem' }}>
                         <p style={{ fontWeight: 'bold', color: GREEN }}>► MEDIA MENTIONS</p>
                         <p style={{ marginLeft: '1rem', marginTop: '0.5rem', color: GREEN }}>
                             / Featured in <a href="https://www.northampton.ac.uk/research-blogs/the-computers-are-taking-over/" target="_blank">University Research Blogs</a> (2 articles)<br />
@@ -490,68 +922,83 @@
                             / Social Media: <a href="https://www.youtube.com/watch?v=92OWIcq3Dvs" target="_blank">YouTube</a>, <a href="https://www.instagram.com/reel/C2uORNztVyo/" target="_blank">Instagram</a>
                         </p>
                     </div>
-
-                    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(74, 222, 128, 0.3)', opacity: 0.7, fontSize: '0.875rem', color: GREEN }}>
-                        Press ESC to return to menu
-                    </div>
                 </div>
             );
 
             const renderContact = () => (
                 <div>
-                    <pre style={{ marginBottom: '1rem', color: GREEN }}>{`> CONTACT_INFO.DAT`}</pre>
-
+                    <pre style={{ marginBottom: '1rem', color: GREEN, fontWeight: 'bold' }}>{`> CONTACT_INFO.DAT`}</pre>
                     <div>
-                        <p style={{ fontWeight: 'bold', marginBottom: '1rem', color: GREEN }}>► GET IN TOUCH</p>
-
+                        <p style={{ fontWeight: 'bold', marginBottom: '1.5rem', color: GREEN }}>► GET IN TOUCH</p>
                         <div style={{ marginLeft: '1rem' }}>
-                            <p style={{ marginBottom: '0.5rem', color: GREEN }}>
+                            <p style={{ marginBottom: '1rem', color: GREEN }}>
                                 <span style={{ opacity: 0.7 }}>/ EMAIL:</span><br />
                                 &nbsp;&nbsp;<a href="mailto:jatinarora2689@gmail.com">jatinarora2689@gmail.com</a>
                             </p>
-
-                            <p style={{ marginBottom: '0.5rem', color: GREEN }}>
+                            <p style={{ marginBottom: '1rem', color: GREEN }}>
                                 <span style={{ opacity: 0.7 }}>/ PHONE:</span><br />
                                 &nbsp;&nbsp;<a href="tel:+447587336110">+44 7587 336110</a>
                             </p>
-
-                            <p style={{ marginBottom: '0.5rem', color: GREEN }}>
+                            <p style={{ marginBottom: '1rem', color: GREEN }}>
                                 <span style={{ opacity: 0.7 }}>/ LOCATION:</span><br />
                                 &nbsp;&nbsp;86, Abington Avenue<br />
                                 &nbsp;&nbsp;Northampton, NN1 4PA<br />
                                 &nbsp;&nbsp;United Kingdom
                             </p>
-
-                            <p style={{ marginBottom: '0.5rem', color: GREEN }}>
+                            <p style={{ marginBottom: '1rem', color: GREEN }}>
                                 <span style={{ opacity: 0.7 }}>/ PORTFOLIO:</span><br />
                                 &nbsp;&nbsp;<a href="https://maddy-codes.github.io" target="_blank">maddy-codes.github.io</a>
                             </p>
-
-                            <p style={{ marginBottom: '0.5rem', color: GREEN }}>
+                            <p style={{ marginBottom: '1rem', color: GREEN }}>
                                 <span style={{ opacity: 0.7 }}>/ LINKEDIN:</span><br />
                                 &nbsp;&nbsp;<a href="https://linkedin.com/in/jaz-arora" target="_blank">linkedin.com/in/jatin-arora</a>
                             </p>
-
-                            <p style={{ marginBottom: '0.5rem', color: GREEN }}>
+                            <p style={{ marginBottom: '1rem', color: GREEN }}>
                                 <span style={{ opacity: 0.7 }}>/ GITHUB:</span><br />
                                 &nbsp;&nbsp;<a href="https://github.com/maddy-codes" target="_blank">github.com/maddy-codes</a>
                             </p>
                         </div>
-
-                        <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(74, 222, 128, 0.3)' }}>
+                        <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(74, 222, 128, 0.3)' }}>
                             <p style={{ textAlign: 'center', animation: 'pulse 2s infinite', color: GREEN }}>
                                 ~ Available for Data Engineering & AI opportunities ~
                             </p>
                         </div>
                     </div>
-
-                    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(74, 222, 128, 0.3)', opacity: 0.7, fontSize: '0.875rem', color: GREEN }}>
-                        Press ESC to return to menu
-                    </div>
                 </div>
             );
 
-            const renderScreen = () => {
+            const renderTerminal = () => (
+                <div style={{ minHeight: '100%', paddingBottom: '2rem' }}>
+                    {terminalHistory.map((line, i) => (
+                        <div key={i} style={{ color: GREEN, whiteSpace: 'pre-wrap', marginBottom: '0.25rem' }}>{line}</div>
+                    ))}
+                    <div style={{ display: 'flex', alignItems: 'center', marginTop: '0.5rem' }}>
+                        <span style={{ color: GREEN, marginRight: '0.5rem' }}>visitor@portfolio:~$</span>
+                        <input
+                            type="text"
+                            className="terminal-input"
+                            value={terminalInput}
+                            onChange={(e) => setTerminalInput(e.target.value)}
+                            onKeyDown={handleTerminalCommand}
+                            autoFocus
+                        />
+                    </div>
+                    <div ref={terminalEndRef} />
+                </div>
+            );
+
+            const isCenteredScreen = ['boot', 'menu', 'shutdown'].includes(currentScreen);
+
+            const renderContent = () => {
+                if (currentScreen === 'shutdown') {
+                    return <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', color: GREEN }}>{shutdownText}</pre>;
+                }
+
+                // If in terminal mode, override
+                if (inputMode === 'terminal') {
+                    return renderTerminal();
+                }
+
                 switch (currentScreen) {
                     case 'boot':
                         return <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', color: GREEN }}>{bootText}</pre>;
@@ -575,20 +1022,38 @@
             };
 
             return (
-                <div style={{ height: '100vh', width: '100vw', display: 'flex', padding: 0, margin: 0 }}>
-                    <div style={{ backgroundColor: '#e5e7eb', width: '100%', height: '100%', padding: '2.5rem', display: 'flex', flexDirection: 'column' }}>
-                        <div className="crt-screen" style={{ position: 'relative', backgroundColor: '#000', overflow: 'hidden', flex: 1, borderRadius: '0.5rem' }}>
-                            <div className="scanline"></div>
-                            <div style={{ position: 'relative', zIndex: 20, height: '100%', overflowY: 'auto', padding: '2rem', color: GREEN }}>
-                                {renderScreen()}
+                <div className="monitor-case">
+                    <div className={`crt-screen ${isPoweredOff ? 'system-off' : ''}`}>
+                        <div className="crt-overlay"></div>
+                        <div className="scanline"></div>
+
+                        <div
+                            className="content-wrapper"
+                            ref={scrollRef}
+                        >
+                            <div className={`content-container ${isCenteredScreen && inputMode !== 'terminal' ? 'center-aligned' : 'top-aligned'}`}>
+                                <div className={`content-inner screen-fade ${isTransitioning ? 'hidden' : ''}`}>
+                                    {renderContent()}
+                                </div>
                             </div>
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, transparent, transparent, rgba(74, 222, 128, 0.05))', pointerEvents: 'none', zIndex: 30 }}></div>
                         </div>
-                        <div style={{ backgroundColor: '#d1d5db', height: '0.75rem', marginTop: '0.5rem' }}></div>
-                        <div style={{ backgroundColor: '#9ca3af', height: '1.5rem', width: '8rem', margin: '0 auto', borderRadius: '0 0 0.75rem 0.75rem' }}></div>
+
+                        <div className="status-bar">
+                            <span>MODE: {inputMode === 'terminal' ? 'TERMINAL' : currentScreen.toUpperCase()}</span>
+                            <span style={{ opacity: 0.7 }}>
+                                {inputMode === 'terminal' ? 'ESC: GUI' : 'T: TERMINAL'}
+                                {' '}| S: SOUND {soundEnabled ? 'ON' : 'OFF'}
+                                {' '}| Q: SHUTDOWN
+                            </span>
+                        </div>
                     </div>
                 </div>
             );
         };
 
-        ReactDOM.render(<CRTPortfolio />, document.getElementById('root'));
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<CRTPortfolio />);
+    </script>
+</body>
+
+</html>
